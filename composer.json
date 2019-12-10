@@ -6,7 +6,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Routers\\": "routes/"
+            "Routers\\": "routes/",
+            "DataManagerLam\\": "services/DataManagerLam/",
+            "Settings\\": "settings/"
         }
     }
 }
