@@ -16,6 +16,16 @@ $app->get('/users', function (Request $request, Response $response, array $args)
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
 });
 
+$app->get('/user/{id}', function (Request $request, Response $response, array $args) {
+  
+  $userController = new UserController;
+  
+  if ( $userController->getById($args['id']) ) {
+    return $response->withJson(array( "ok" => TRUE, "output" => $userController->output ));
+  }
+  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+});
+
 $app->post('/user', function (Request $request, Response $response) {
   $args = $request->getParams();
   

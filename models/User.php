@@ -24,6 +24,18 @@ class User extends DataManager {
   }
 
   /**
+   * getById
+   *
+   * @param  int $id
+   *
+   * @return void
+   */
+  public function getById(int $id) {
+    $this->condition = array( "id" => $id );
+    return $this->select();
+  }
+
+  /**
    * create
    *
    * @param  string $password

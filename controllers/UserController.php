@@ -24,6 +24,26 @@ class UserController {
     $this->msg = 'Users not found';
     return FALSE;
   }
+  
+  /**
+   * getById
+   *
+   * @param  int $id
+   *
+   * @return bool
+   */
+  public function getById(int $id):bool {
+    $userModel = new User;
+
+    $result = $userModel->getById($id);
+    if ( $result ) {
+      $this->output = $result;
+      return TRUE;
+    }
+    
+    $this->msg = 'User not found';
+    return FALSE;
+  }
 
   /**
    * create
