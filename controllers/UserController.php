@@ -14,13 +14,59 @@ class UserController {
    */
   public function getAll():bool {
     $userModel = new User;
-    
-    if ( $userModel->getAll() ) {
-      $this->output = $userModel;
+
+    $result = $userModel->getAll();
+    if ( $result ) {
+      $this->output = $result;
       return TRUE;
     }
     
     $this->msg = 'Users not found';
     return FALSE;
+  }
+
+  /**
+   * create
+   *
+   * @param  mixed $args
+   *
+   * @return bool
+   */
+  public function create(array $args):bool {
+    
+    if ( !$this->checkValidate($args) ) return FALSE;
+
+    $userModel = new User;
+    $userModel->name = $args['name'];
+    $userModel->email = $args['email'];
+    
+    $result = $userModel->create($args['password']);
+    if ( $result ) {
+      $this->output = $result;
+      return TRUE;
+    }
+    
+    $this->msg = 'User not created';
+    return FALSE;
+  }
+
+  /**
+   * checkValidate
+   *
+   * @param  array $args
+   *
+   * @return bool
+   */
+  private function checkValidate(array $args):bool {
+    if (
+      !isset($args['name']) || empty($args['name']) ||
+      !isset($args['email']) || empty($args['email']) ||
+      !isset($args['password']) || empty($args['password'])
+    ){
+      $this->msg = 'Data not validated';
+      return FALSE;
+    }
+
+    return TRUE;
   }
 }

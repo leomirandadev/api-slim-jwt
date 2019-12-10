@@ -15,3 +15,14 @@ $app->get('/users', function (Request $request, Response $response, array $args)
   }
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
 });
+
+$app->post('/user', function (Request $request, Response $response) {
+  $args = $request->getParams();
+  
+  $userController = new UserController;
+  
+  if ( $userController->create($args) ) {
+    return $response->withJson(array( "ok" => TRUE, "idInserido" => $userController->output ));
+  }
+  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+});
