@@ -36,8 +36,8 @@ class User extends AbstractMigration
         ->addColumn('password_hash', 'string', ['limit' => 40])
         ->addColumn('phone', 'string', ['limit' => 20])
         ->addColumn('email', 'string', ['limit' => 100])
-        ->addColumn('created', 'datetime')
-        ->addColumn('updated', 'datetime', ['null' => true])
+        ->addColumn('created', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+        ->addColumn('updated', 'datetime', ['null' => true, 'update' => 'CURRENT_TIMESTAMP'])
         ->addIndex(['email'], ['unique' => true])
         ->create();
     }
