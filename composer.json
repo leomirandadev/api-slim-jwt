@@ -8,7 +8,9 @@
         "psr-4": {
             "Routers\\": "routes/",
             "DataManagerLam\\": "services/DataManagerLam/",
-            "Settings\\": "settings/"
+            "Settings\\": "settings/",
+            "Controllers\\": "controllers/",
+            "Models\\": "models/"
         }
     }
 }

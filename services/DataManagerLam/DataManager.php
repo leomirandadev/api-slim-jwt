@@ -1,12 +1,10 @@
 <?php  
-namespace DataManager;
+namespace DataManagerLam;
 use \PDO;
 
 use Settings\ConfigDB;
 
 class DataManager extends ConfigDB{
-
-	use ConfigBD;
 
 	protected $db = null;
 

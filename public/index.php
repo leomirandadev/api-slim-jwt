@@ -6,6 +6,7 @@
     
     // routes =======================
     include_once( $rootFolder . "/routes/hello-world.php" );
+    include_once( $rootFolder . "/routes/user.php" );
     // routes =======================
     
     $app->run();
