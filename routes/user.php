@@ -4,27 +4,28 @@ namespace Routers;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+use Jwt\JwtProcess, Middleware\Jwt as JwtMiddleware;
 use Controllers\UserController;
 
 $app->get('/users', function (Request $request, Response $response, array $args) {
-  
+  $atr = $request->getAttribute('payload');
   $userController = new UserController;
   
   if ( $userController->getAll() ) {
     return $response->withJson(array( "ok" => TRUE, "output" => $userController->output ));
   }
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
-});
+})->add(new JwtMiddleware());
 
 $app->get('/user/{id}', function (Request $request, Response $response, array $args) {
-  
+  $atr = $request->getAttribute('payload');
   $userController = new UserController;
   
   if ( $userController->getById($args['id']) ) {
     return $response->withJson(array( "ok" => TRUE, "output" => $userController->output ));
   }
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
-});
+})->add(new JwtMiddleware());
 
 $app->post('/user', function (Request $request, Response $response) {
   $args = $request->getParams();
@@ -35,4 +36,14 @@ $app->post('/user', function (Request $request, Response $response) {
     return $response->withJson(array( "ok" => TRUE, "idInserido" => $userController->output ));
   }
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+});
+
+$app->post('/user/login', function (Request $request, Response $response) {
+  $userController = new UserController;
+  if ($userController->login($request->getParams())) {
+      $jwt = new JwtProcess;
+      $token = $jwt->encode($userController->output);
+      return $response->withJson( array("ok" => TRUE, "output" => $userController->output, "token" => $token) );
+  }
+  return $response->withJson( array("ok" => FALSE, "output" => $userController->output) );
 });

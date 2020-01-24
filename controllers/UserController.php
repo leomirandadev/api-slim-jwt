@@ -71,6 +71,29 @@ class UserController {
   }
 
   /**
+   * create
+   *
+   * @param  mixed $args
+   *
+   * @return bool
+   */
+  public function login(array $args):bool {
+
+    $userModel = new User;
+    $userModel->email = $args['email'];
+    $result = $userModel->getByEmailPassword($args['password']);
+
+    if ( $result ) {
+      unset($result[0]['password_hash']);
+      $this->output = $result;
+      return TRUE;
+    }
+    
+    $this->msg = 'User not found';
+    return FALSE;
+  }
+
+  /**
    * checkValidate
    *
    * @param  array $args

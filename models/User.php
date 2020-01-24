@@ -51,4 +51,20 @@ class User extends DataManager {
     );
     return $this->insert();
   }
+
+  /**
+   * getByEmailPassword
+   *
+   * @param  string $password
+   *
+   * @return void
+   */
+  public function getByEmailPassword(string $password) {
+    $passwordHash = md5( $password );
+    $this->condition = array(
+      'password_hash' => $passwordHash,
+      'email' => $this->email
+    );
+    return $this->select();
+  }
 }
