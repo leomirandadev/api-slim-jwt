@@ -1,14 +1,15 @@
 <?php
     namespace Jwt;
     use \Firebase\JWT\JWT;
+    use Settings\ConfigJwt;
     
-    class JwtProcess {
+    class JwtProcess extends ConfigJwt{
         
         private $key;
         public $payload;
         
         function __construct() {
-            $this->key = md5("45rRVuciUR9UsPfr#ssDouXZ_flwFOLpd7BgrObDkVIbRnRt0");
+            $this->key = $this->getSecretKey();
         }
         
         /**
@@ -19,8 +20,10 @@
          * @return string
          */
         public function encode(array $payload):string {
-            // $dia = 60*60*24;
-            // $payload['exp'] = time() + 1*$dia;
+            $dia = 60*60*24; // seconds
+            $validade = 30 * $dia; // seconds
+            
+            $payload['exp'] = time() + $validade;
             $jwt = JWT::encode($payload, $this->key, 'HS256');
             return $jwt;
         }
