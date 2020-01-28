@@ -13,7 +13,11 @@
             "Controllers\\": "controllers/",
             "Middleware\\": "middleware/",
             "Models\\": "models/",
-            "Jwt\\": "services/Jwt/"
+            "Jwt\\": "services/Jwt/",
+            "Tests\\": "tests/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
     }
 }
