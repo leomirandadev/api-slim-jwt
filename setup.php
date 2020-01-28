@@ -9,7 +9,7 @@
 
       class ConfigDB{
           protected function getDBName():string { return "api_php"; }
-          protected function getHost():string { return "db"; }
+          protected function getHost():string { return "192.168.0.10"; }
           protected function getUser():string { return "root"; }    
           protected function getPassword():string { return "root"; }
       }
