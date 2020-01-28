@@ -1,15 +1,14 @@
 <?php
 namespace Tests;
 use PHPUnit\Framework\TestCase;
+use Controllers\UserController;
 
 class UserControllerTest extends TestCase
 {
-    public function testEmpty()
+    public function testGetAll()
     {
-        $stack = [];
-        $this->assertEmpty($stack);
-
-        return $stack;
+        $userController = new UserController;
+        $this->assertEquals(TRUE, $userController->getAll());
     }
 }
 ?>
