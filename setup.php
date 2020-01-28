@@ -1,6 +1,8 @@
 <?php 
   
   $folderSettings = __DIR__.'/settings/';
+  $keysecret = uniqid(base64_encode(rand()));
+
   $arqsSettings = [
     array(
       'arqName'=>'ConfigDb.php',
@@ -21,7 +23,7 @@
       namespace Settings;
       class ConfigJwt{
           protected function getSecretKey():string {
-            return md5("45rRVuciUR9UsPfr#ssDouXZ_flwFOLpd7BgrObDkVIbRnRt0");
+            return md5("'.$keysecret.'");
           }
       }'
     )
