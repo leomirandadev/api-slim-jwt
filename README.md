@@ -12,6 +12,7 @@ Para iniciar o projeto basta:
 - Executar o comando ``php setup.php`` na raiz do projeto. Este processo criará os arquivos de configuração do banco de dados e da JWT;
 - Levantar o serviço com o comando ``docker-compose -f "dockerfiles/dev/docker-compose.yml" up -d --build`` na raiz do projeto;
 - Executar o comando ``./phinx migrate`` na raiz do projeto. Isto criará as instancias do banco de dados;
+- Para o funcionamento correto, altere o IP do banco de dados para o IP local da sua máquina. Para isto, basta alterar o retorno da função ``getHost()`` no arquivo ``settings/ConfigDb.php``. Para descobrir seu IP local basta usar o comando ``ifconfig`` no linux ou o ``ipconfig`` no windows.
 
 Pronto! Agora sua ``API`` deve estar disponível na ``porta 80`` e o serviço de gerenciamento de banco, ``PhpMyAdmin``, na ``porta 8001``.
 
