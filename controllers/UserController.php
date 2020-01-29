@@ -54,7 +54,7 @@ class UserController {
    */
   public function create(array $args):bool {
     
-    if ( !$this->checkValidate($args) ) return FALSE;
+    if ( !$this->checkDataToCreate($args) ) return FALSE;
 
     $userModel = new User;
     $userModel->name = $args['name'];
@@ -77,7 +77,35 @@ class UserController {
    *
    * @return bool
    */
+  public function changePassword(int $id, array $args):bool {
+
+    if ( !$this->checkDataToChangePassword($args) ) return FALSE;
+
+    $userModel = new User;
+
+    if ( $userModel->getByIdPassword($id, $args['password']) ){
+      if ($userModel->changePassword($id, $args['newPassword'])) {
+        $this->msg = 'Password change successfuly';
+        return TRUE;
+      }
+      $this->msg = 'Error on change password';
+      return FALSE;
+    }
+    
+    $this->msg = 'User not match';
+    return FALSE;
+  }
+
+  /**
+   * create
+   *
+   * @param  mixed $args
+   *
+   * @return bool
+   */
   public function login(array $args):bool {
+
+    if ( !$this->checkDataToLogin($args) ) return FALSE;
 
     $userModel = new User;
     $userModel->email = $args['email'];
@@ -94,16 +122,54 @@ class UserController {
   }
 
   /**
-   * checkValidate
+   * checkDataToCreate
    *
    * @param  array $args
    *
    * @return bool
    */
-  private function checkValidate(array $args):bool {
+  private function checkDataToCreate(array $args):bool {
     if (
       !isset($args['name']) || empty($args['name']) ||
       !isset($args['email']) || empty($args['email']) ||
+      !isset($args['password']) || empty($args['password'])
+    ){
+      $this->msg = 'Data not validated';
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * checkDataToLogin
+   *
+   * @param  array $args
+   *
+   * @return bool
+   */
+  private function checkDataToLogin(array $args):bool {
+    if (
+      !isset($args['email']) || empty($args['email']) ||
+      !isset($args['password']) || empty($args['password'])
+    ){
+      $this->msg = 'Data not validated';
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+ 
+  /**
+   * checkDataToChangePassword
+   *
+   * @param  array $args
+   *
+   * @return bool
+   */
+  private function checkDataToChangePassword(array $args):bool {
+    if (
+      !isset($args['newPassword']) || empty($args['newPassword']) ||
       !isset($args['password']) || empty($args['password'])
     ){
       $this->msg = 'Data not validated';

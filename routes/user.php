@@ -52,3 +52,13 @@ $app->post('/user/login', function (Request $request, Response $response) {
   return $response->withJson( array("ok" => FALSE, "output" => $userController->output) );
 
 });
+
+$app->patch('/user/{id}/password', function (Request $request, Response $response, array $args) {
+  $data = $request->getParams();
+  $userController = new UserController;
+  
+  if ( $userController->changePassword($args['id'], $data) ) {
+    return $response->withJson(array( "ok" => TRUE, "msg" => $userController->msg ));
+  }
+  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+})->add(new JwtMiddleware);
