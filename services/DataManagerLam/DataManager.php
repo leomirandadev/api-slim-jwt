@@ -20,14 +20,24 @@ class DataManager extends ConfigDB{
 	public $orderByInnerTable = null;
 	public $errorDB = null;
 
-	private function Settings() {
+	/**
+	 * settings
+	 *
+	 * @return void
+	 */
+	private function settings() {
 		$this->dsn = "mysql:dbname=".$this->getDBName()."; host=".$this->getHost();
 		$this->user = $this->getUser();
 		$this->pass = $this->getPassword();
 	}
 
-	protected function Open(){
-		$this->Settings();
+	/**
+	 * open
+	 *
+	 * @return void
+	 */
+	protected function open(){
+		$this->settings();
 		try{
 			$options= array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC);
 			$this->db = new PDO($this->dsn, $this->user, $this->pass, $options);
@@ -37,13 +47,23 @@ class DataManager extends ConfigDB{
 		}
 	}
 
-	protected function Close(){
+	/**
+	 * close
+	 *
+	 * @return void
+	 */
+	protected function close(){
 		$this->db = null;
 		return true;
 	}
 
-	protected function Insert(){
-		$this->Open();
+	/**
+	 * insert
+	 *
+	 * @return void
+	 */
+	protected function insert(){
+		$this->open();
 		$conector = $this->db;
 
 		$first = 0;
@@ -63,18 +83,23 @@ class DataManager extends ConfigDB{
 		//try to insert
 		try{
 			$conector->exec($sql);
-			$this->Close();
+			$this->close();
 			return $conector->lastInsertId();
 
 		}catch (Exception $e) {
 			$this->errorDB = $e;
-			$this->Close();
+			$this->close();
 			return FALSE;
 		}
 	}
 
-	protected function Update(){
-		$this->Open();
+	/**
+	 * update
+	 *
+	 * @return void
+	 */
+	protected function update(){
+		$this->open();
 		$conector = $this->db;
 
 		$first = false;
@@ -92,25 +117,35 @@ class DataManager extends ConfigDB{
 
 		}
 		//conditions of selection 
-		$conditions = $this->ConditionFormat();
+		$conditions = $this->conditionFormat();
 		$sql = "UPDATE $this->table SET $camps WHERE $conditions ";
 		//try to update
-		return $this->TryCatch($sql,$conector);
+		return $this->tryCatch($sql,$conector);
 
 	}
 
-	protected function Delete(){
-		$this->Open();
+	/**
+	 * delete
+	 *
+	 * @return void
+	 */
+	protected function delete(){
+		$this->open();
 		$conector = $this->db;
 		//conditions for selection 
-		$conditions = $this->ConditionFormat();
+		$conditions = $this->conditionFormat();
 		$sql = "DELETE FROM $this->table WHERE $conditions ";
 		//try to delete
-		return $this->TryCatch($sql,$conector);
+		return $this->tryCatch($sql,$conector);
 	}
 
-	protected function Select(){
-		$this->Open();
+	/**
+	 * select
+	 *
+	 * @return void
+	 */
+	protected function select(){
+		$this->open();
 		$conector = $this->db;
 		
 		$innerJoin = (isset($this->innerJoin)) ? "INNER JOIN ".$this->innerJoin['table']." ON $this->table.".$this->innerJoin["camps"][0]." = ".$this->innerJoin['table'].".".$this->innerJoin['camps'][1] : "";
@@ -127,27 +162,32 @@ class DataManager extends ConfigDB{
 
 		//conditions for selection
 		if($this->condition !== null){
-			$conditions = $this->ConditionFormat();
+			$conditions = $this->conditionFormat();
 			if ($this->conditionLike !== null) {
-				$conditionsLike = $this->ConditionLikeFormat();
+				$conditionsLike = $this->conditionLikeFormat();
 				$sql = "SELECT $anotherCamp $this->table.* FROM $this->table $innerJoin WHERE $conditions AND $conditionsLike ORDER BY $orderBySelected";
 			} else {
 				$sql = "SELECT $anotherCamp $this->table.* FROM $this->table $innerJoin WHERE $conditions ORDER BY $orderBySelected";
 			}
 		}else{
 			if ($this->conditionLike !== null) {
-				$conditionsLike = $this->ConditionLikeFormat();
+				$conditionsLike = $this->conditionLikeFormat();
 				$sql = "SELECT $anotherCamp $this->table.* FROM $this->table $innerJoin WHERE $conditionsLike ORDER BY $orderBySelected";
 			} else {
 				$sql = "SELECT $anotherCamp $this->table.* FROM $this->table $innerJoin ORDER BY $orderBySelected";
 			}
 		}
 
-		return $this->QuerySelect($sql,$conector);
+		return $this->querySelect($sql,$conector);
 
 	}
 
-	private function ConditionFormat(){
+	/**
+	 * conditionFormat
+	 *
+	 * @return void
+	 */
+	private function conditionFormat(){
 		$first = false;
 		$conditions = null;
 		foreach ($this->condition as $camp => $value) {
@@ -159,7 +199,12 @@ class DataManager extends ConfigDB{
 		return $conditions;
 	}
 	
-	private function ConditionLikeFormat(){
+	/**
+	 * conditionLikeFormat
+	 *
+	 * @return void
+	 */
+	private function conditionLikeFormat(){
 		$first = false;
 		$conditions = null;
 		foreach ($this->conditionLike as $camp => $value) {
@@ -171,27 +216,43 @@ class DataManager extends ConfigDB{
 		return $conditions;
 	}
 
-	private function QuerySelect ($sql, $conector) {
+	/**
+	 * querySelect
+	 *
+	 * @param  mixed $sql
+	 * @param  mixed $conector
+	 *
+	 * @return void
+	 */
+	private function querySelect($sql, $conector) {
 		$pesquisaSql = $conector->query($sql);
 		$rows = $pesquisaSql->rowCount();
 		if($rows<1){
-			$this->Close();
+			$this->close();
 			return FALSE;
 		}
 		$dados = $pesquisaSql->fetchAll();
-		$this->Close();
+		$this->close();
 
 		return $dados;
 	}
 
-	private function TryCatch ($sql, $conector) {
+	/**
+	 * tryCatch
+	 *
+	 * @param  mixed $sql
+	 * @param  mixed $conector
+	 *
+	 * @return void
+	 */
+	private function tryCatch($sql, $conector) {
 		try{
 			$conector->exec($sql);
-			$this->Close();
+			$this->close();
 			return true;
 		}catch(Exception $e){
 			$this->errorDB = $e;
-			$this->Close();
+			$this->close();
 			return false;
 		}
 	}
