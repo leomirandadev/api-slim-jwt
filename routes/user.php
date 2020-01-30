@@ -62,3 +62,13 @@ $app->patch('/user/{id}/password', function (Request $request, Response $respons
   }
   return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
 })->add(new JwtMiddleware);
+
+$app->put('/user/{id}', function (Request $request, Response $response, array $args) {
+  $data = $request->getParams();
+  $userController = new UserController;
+  
+  if ( $userController->update($args['id'], $data) ) {
+    return $response->withJson(array( "ok" => TRUE, "msg" => $userController->msg ));
+  }
+  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+});

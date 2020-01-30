@@ -48,13 +48,13 @@ class UserController {
   /**
    * create
    *
-   * @param  mixed $args
+   * @param  array $args
    *
    * @return bool
    */
   public function create(array $args):bool {
     
-    if ( !$this->checkDataToCreate($args) ) return FALSE;
+    if ( !$this->checkAllData($args) ) return FALSE;
 
     $userModel = new User;
     $userModel->name = $args['name'];
@@ -71,9 +71,38 @@ class UserController {
   }
 
   /**
-   * create
+   * update
    *
-   * @param  mixed $args
+   * @param  array $args
+   * @param  int $id
+   *
+   * @return bool
+   */
+  public function update(int $id, array $args):bool {
+    
+    if ( !$this->checkAllData($args) ) return FALSE;
+
+    $userModel = new User;
+    $userModel->name = $args['name'];
+    $userModel->email = $args['email'];
+    
+    if ( $userModel->getByIdPassword($id, $args['password']) ){
+      if ( $userModel->changeAll($id, $args['password']) ) {
+        $this->msg = 'User updated successfuly';
+        return TRUE;
+      }
+      $this->msg = 'Error on change user data';
+      return FALSE;
+    }
+    
+    $this->msg = 'User not match';
+    return FALSE;
+  }
+
+  /**
+   * changePassword
+   *
+   * @param  array $args
    *
    * @return bool
    */
@@ -97,9 +126,9 @@ class UserController {
   }
 
   /**
-   * create
+   * login
    *
-   * @param  mixed $args
+   * @param  array $args
    *
    * @return bool
    */
@@ -122,13 +151,13 @@ class UserController {
   }
 
   /**
-   * checkDataToCreate
+   * checkAllData
    *
    * @param  array $args
    *
    * @return bool
    */
-  private function checkDataToCreate(array $args):bool {
+  private function checkAllData(array $args):bool {
     if (
       !isset($args['name']) || empty($args['name']) ||
       !isset($args['email']) || empty($args['email']) ||

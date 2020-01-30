@@ -101,4 +101,22 @@ class User extends DataManager {
 
     return $this->update();
   }
+
+  /**
+   * changeAll
+   *
+   * @param  string $password
+   *
+   * @return void
+   */
+  public function changeAll(int $id, string $password) {
+
+    $this->condition = array('id'=> $id);
+    $this->data = array(
+      'name' => $this->name,
+      'email' => $this->email
+    );
+    return $this->update();
+
+  }
 }
