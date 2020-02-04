@@ -9,7 +9,7 @@ $keysecret = uniqid(base64_encode(rand()));
 
 $arqsSettings = [
   array(
-    'arqName'=>'ConfigDb.php',
+    'arqName'=>'ConfigDB.php',
     'conteudo'=>'<?php  
     namespace Settings;
 
