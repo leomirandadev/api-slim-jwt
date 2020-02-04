@@ -7,6 +7,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Jwt\JwtProcess, Middleware\Jwt as JwtMiddleware;
 use Controllers\UserController;
 
+
+// GET ALL USERS
 $app->get('/users', function (Request $request, Response $response, array $args) {
   $userController = new UserController;
   
@@ -17,6 +19,8 @@ $app->get('/users', function (Request $request, Response $response, array $args)
 
 })->add(new JwtMiddleware);
 
+
+// GET USER BY ID
 $app->get('/user/{id}', function (Request $request, Response $response, array $args) {
 
   $userController = new UserController;
@@ -28,6 +32,8 @@ $app->get('/user/{id}', function (Request $request, Response $response, array $a
 
 })->add(new JwtMiddleware);
 
+
+// INSERT A NEW USER
 $app->post('/user', function (Request $request, Response $response) {
 
   $args = $request->getParams();
@@ -40,6 +46,8 @@ $app->post('/user', function (Request $request, Response $response) {
 
 });
 
+
+// LOGIN 
 $app->post('/user/login', function (Request $request, Response $response) {
 
   $userController = new UserController;
@@ -53,6 +61,8 @@ $app->post('/user/login', function (Request $request, Response $response) {
 
 });
 
+
+// UPDATE PASSWORD FROM USER
 $app->patch('/user/{id}/password', function (Request $request, Response $response, array $args) {
   $data = $request->getParams();
   $userController = new UserController;
@@ -63,6 +73,8 @@ $app->patch('/user/{id}/password', function (Request $request, Response $respons
   return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 })->add(new JwtMiddleware);
 
+
+// UPDATE ALL DATA FROM USER
 $app->put('/user/{id}', function (Request $request, Response $response, array $args) {
   $data = $request->getParams();
   $userController = new UserController;
