@@ -13,7 +13,7 @@ $app->get('/users', function (Request $request, Response $response, array $args)
   if ( $userController->getAll() ) {
     return $response->withJson(array( "ok" => TRUE, "output" => $userController->output ));
   }
-  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+  return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 
 })->add(new JwtMiddleware);
 
@@ -24,7 +24,7 @@ $app->get('/user/{id}', function (Request $request, Response $response, array $a
   if ( $userController->getById($args['id']) ) {
     return $response->withJson(array( "ok" => TRUE, "output" => $userController->output ));
   }
-  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+  return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 
 })->add(new JwtMiddleware);
 
@@ -36,7 +36,7 @@ $app->post('/user', function (Request $request, Response $response) {
   if ( $userController->create($args) ) {
     return $response->withJson(array( "ok" => TRUE, "idInserido" => $userController->output ));
   }
-  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+  return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 
 });
 
@@ -58,9 +58,9 @@ $app->patch('/user/{id}/password', function (Request $request, Response $respons
   $userController = new UserController;
   
   if ( $userController->changePassword($args['id'], $data) ) {
-    return $response->withJson(array( "ok" => TRUE, "msg" => $userController->msg ));
+    return $response->withJson(array( "ok" => TRUE, "message" => $userController->message ));
   }
-  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+  return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 })->add(new JwtMiddleware);
 
 $app->put('/user/{id}', function (Request $request, Response $response, array $args) {
@@ -68,7 +68,7 @@ $app->put('/user/{id}', function (Request $request, Response $response, array $a
   $userController = new UserController;
   
   if ( $userController->update($args['id'], $data) ) {
-    return $response->withJson(array( "ok" => TRUE, "msg" => $userController->msg ));
+    return $response->withJson(array( "ok" => TRUE, "message" => $userController->message ));
   }
-  return $response->withJson(array( "ok" => FALSE, "msg" => $userController->msg ));
+  return $response->withJson(array( "ok" => FALSE, "message" => $userController->message ));
 });

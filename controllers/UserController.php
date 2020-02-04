@@ -5,7 +5,7 @@ use Models\User;
 class UserController {
 
   public $output = array();
-  public $msg = '';
+  public $message = '';
 
   /**
    * getAll
@@ -21,7 +21,7 @@ class UserController {
       return TRUE;
     }
     
-    $this->msg = 'Users not found';
+    $this->message = 'Users not found';
     return FALSE;
   }
   
@@ -41,7 +41,7 @@ class UserController {
       return TRUE;
     }
     
-    $this->msg = 'User not found';
+    $this->message = 'User not found';
     return FALSE;
   }
 
@@ -66,7 +66,7 @@ class UserController {
       return TRUE;
     }
     
-    $this->msg = 'User not created';
+    $this->message = 'User not created';
     return FALSE;
   }
 
@@ -88,14 +88,14 @@ class UserController {
     
     if ( $userModel->getByIdPassword($id, $args['password']) ){
       if ( $userModel->changeAll($id, $args['password']) ) {
-        $this->msg = 'User updated successfuly';
+        $this->message = 'User updated successfuly';
         return TRUE;
       }
-      $this->msg = 'Error on change user data';
+      $this->message = 'Error on change user data';
       return FALSE;
     }
     
-    $this->msg = 'User not match';
+    $this->message = 'User not match';
     return FALSE;
   }
 
@@ -114,14 +114,14 @@ class UserController {
 
     if ( $userModel->getByIdPassword($id, $args['password']) ){
       if ($userModel->changePassword($id, $args['newPassword'])) {
-        $this->msg = 'Password change successfuly';
+        $this->message = 'Password change successfuly';
         return TRUE;
       }
-      $this->msg = 'Error on change password';
+      $this->message = 'Error on change password';
       return FALSE;
     }
     
-    $this->msg = 'User not match';
+    $this->message = 'User not match';
     return FALSE;
   }
 
@@ -146,7 +146,7 @@ class UserController {
       return TRUE;
     }
     
-    $this->msg = 'User not found';
+    $this->message = 'User not found';
     return FALSE;
   }
 
@@ -163,7 +163,7 @@ class UserController {
       !isset($args['email']) || empty($args['email']) ||
       !isset($args['password']) || empty($args['password'])
     ){
-      $this->msg = 'Data not validated';
+      $this->message = 'Data not validated';
       return FALSE;
     }
 
@@ -182,7 +182,7 @@ class UserController {
       !isset($args['email']) || empty($args['email']) ||
       !isset($args['password']) || empty($args['password'])
     ){
-      $this->msg = 'Data not validated';
+      $this->message = 'Data not validated';
       return FALSE;
     }
 
@@ -201,7 +201,7 @@ class UserController {
       !isset($args['newPassword']) || empty($args['newPassword']) ||
       !isset($args['password']) || empty($args['password'])
     ){
-      $this->msg = 'Data not validated';
+      $this->message = 'Data not validated';
       return FALSE;
     }
 
