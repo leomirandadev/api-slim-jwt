@@ -2,23 +2,23 @@
   class SetupTools {
 
     private $pathSrc = __DIR__."/src/";
+    private $pathSettings = __DIR__.'/../settings/';
 
     /**
      * createFolderAndArqs
      *
-     * @param  string $pastaSettings
      * @param  array $arquivosSettings
      *
      * @return void
      */
-    public function createFolderAndArqs(string $pastaSettings, array $arquivosSettings):void {
-      $this->createFolderIfNotExist($pastaSettings);
+    public function createFolderAndArqs(array $arquivosSettings):void {
+      $this->createFolderIfNotExist($this->pathSettings);
     
       foreach ($arquivosSettings as $arquivo) {
   
-        if (!$this->checkIfExistArq($arquivo['arqName'], $pastaSettings)) {
-          $this->createArq($arquivo['arqName'], $pastaSettings);
-          $this->setContentArq($arquivo['arqName'], $pastaSettings, $arquivo['vars']);
+        if (!$this->checkIfExistArq($arquivo['arqName'])) {
+          $this->createArq($arquivo['arqName']);
+          $this->setContentArq($arquivo['arqName'], $arquivo['vars']);
         }
   
       }
@@ -29,12 +29,10 @@
     /**
      * createFolderIfNotExist
      *
-     * @param  string $folderRoot
-     *
      * @return void
      */
-    private function createFolderIfNotExist(string $folderRoot):void {
-      if (!is_dir($folderRoot)) mkdir($folderRoot, 0777, true);
+    private function createFolderIfNotExist():void {
+      if (!is_dir($this->pathSettings)) mkdir($this->pathSettings, 0777, true);
     }
   
 
@@ -43,12 +41,11 @@
      * createArq
      *
      * @param  string $arqName
-     * @param  string $folderRoot
      *
      * @return void
      */
-    private function createArq(string $arqName, string $folderRoot):void {
-      touch($folderRoot . $arqName);
+    private function createArq(string $arqName):void {
+      touch($this->pathSettings . $arqName);
     }
   
 
@@ -57,13 +54,12 @@
      * setContentArq
      *
      * @param  string $arqName
-     * @param  string $folderRoot
      * @param  array $vars
      *
      * @return void
      */
-    private function setContentArq(string $arqName, string $folderRoot, array $vars):void {
-      $arquivo = fopen($folderRoot . $arqName,'w');
+    private function setContentArq(string $arqName, array $vars):void {
+      $arquivo = fopen($this->pathSettings . $arqName,'w');
 
       $content = $this->getContentArq($arqName, $vars);
 
@@ -77,12 +73,11 @@
      * checkIfExistArq
      *
      * @param  string $arqName
-     * @param  string $folderRoot
      *
      * @return bool
      */
-    private function checkIfExistArq(string $arqName, string $folderRoot):bool {
-      return file_exists($arqName . $folderRoot);
+    private function checkIfExistArq(string $arqName):bool {
+      return file_exists($this->pathSettings . $arqName);
     }
 
 
