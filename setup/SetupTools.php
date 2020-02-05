@@ -2,7 +2,7 @@
   class SetupTools {
 
     private $pathSrc = __DIR__."/src/";
-    private $pathSettings = __DIR__.'/../settings/';
+    public $pathArqs = __DIR__.'/../settings/';
 
     /**
      * createFolderAndArqs
@@ -12,7 +12,7 @@
      * @return void
      */
     public function createFolderAndArqs(array $arquivosSettings):void {
-      $this->createFolderIfNotExist($this->pathSettings);
+      $this->createFolderIfNotExist($this->pathArqs);
     
       foreach ($arquivosSettings as $arquivo) {
   
@@ -32,7 +32,7 @@
      * @return void
      */
     private function createFolderIfNotExist():void {
-      if (!is_dir($this->pathSettings)) mkdir($this->pathSettings, 0777, true);
+      if (!is_dir($this->pathArqs)) mkdir($this->pathArqs, 0777, true);
     }
   
 
@@ -45,7 +45,7 @@
      * @return void
      */
     private function createArq(string $arqName):void {
-      touch($this->pathSettings . $arqName);
+      touch($this->pathArqs . $arqName);
     }
   
 
@@ -59,7 +59,7 @@
      * @return void
      */
     private function setContentArq(string $arqName, array $vars):void {
-      $arquivo = fopen($this->pathSettings . $arqName,'w');
+      $arquivo = fopen($this->pathArqs . $arqName,'w');
 
       $content = $this->getContentArq($arqName, $vars);
 
@@ -77,7 +77,7 @@
      * @return bool
      */
     private function checkIfExistArq(string $arqName):bool {
-      return file_exists($this->pathSettings . $arqName);
+      return file_exists($this->pathArqs . $arqName);
     }
 
 

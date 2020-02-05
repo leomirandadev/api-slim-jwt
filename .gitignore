@@ -2,3 +2,4 @@ vendor
 settings
 composer.lock
 notes.md
+phinx.yml

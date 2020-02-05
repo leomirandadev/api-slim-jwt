@@ -16,8 +16,12 @@
       'vars' => [ '%KEYSECRET%' => uniqid(base64_encode(rand())) ]
     ]
   ];
+  $arqPhinxYml = [ [ 'arqName'=>'phinx.yml', 'vars' => [] ] ];
 
   // inicio do setup
   include_once('SetupTools.php');
   $setupTools = new SetupTools;
   $setupTools->createFolderAndArqs($arqsSettings);
+
+  $setupTools->pathArqs = __DIR__.'/../';
+  $setupTools->createFolderAndArqs($arqPhinxYml);
