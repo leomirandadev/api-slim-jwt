@@ -14,18 +14,26 @@
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function __invoke($request, $response, $next) {
-        
+
         $token = $this->verifyHeader( $request->getHeaders() );
         if ( !$token ) {
-            return $response->withJson( array("ok" => FALSE, "error" => "Não autorizado") );
+            return $response->withStatus(401)->withJson([
+                "ok" => FALSE,
+                "message" => "Token required",
+                "output" => [],
+            ]);
         }
 
-        $jwt = $this->validToken($token);
-        if (!$jwt) {
-            return $response->withJson( array("ok" => FALSE, "error" => "Token inválido ou expirado") );
+        $payload = $this->validToken($token);
+        if (!$payload) {
+            return $response->withStatus(401)->withJson([
+                "ok" => FALSE,
+                "message" => "Invalid Token",
+                "output" => [],
+            ]);
         }
 
-        $request = $request->withAttribute('payload', $jwt);
+        $request = $request->withAttribute('payload', $payload);
         return $next($request, $response);
     }
 
@@ -37,7 +45,7 @@
      * @return void
      */
     private function verifyHeader(array $header) {
-        try {            
+        try {
             $authorization = explode("Bearer ", $header["HTTP_AUTHORIZATION"][0]);
             if ($authorization) return $authorization[1];
 
