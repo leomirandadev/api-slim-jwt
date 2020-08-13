@@ -1,5 +1,4 @@
 <?php
-namespace Routers;
 
 use Controllers\UserController;
 use Middleware\Jwt as JwtMiddleware;
