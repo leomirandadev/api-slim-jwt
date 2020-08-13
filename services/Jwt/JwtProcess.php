@@ -9,6 +9,7 @@ class JwtProcess extends ConfigJwt
 
     private $key;
     public $payload;
+    const oneDayTime = 60 * 60 * 24;
 
     /**
      * encode
@@ -19,8 +20,11 @@ class JwtProcess extends ConfigJwt
      */
     public static function encode(array $payload): string
     {
-        // $dia = 60*60*24;
-        // $payload['exp'] = time() + 1*$dia;
+
+        if (self::$expire) {
+            $payload['exp'] = time() + (self::$daysToExp * self::oneDayTime);
+        }
+
         $jwt = JWT::encode($payload, self::getPrivateKey(), 'RS256');
         return $jwt;
     }
