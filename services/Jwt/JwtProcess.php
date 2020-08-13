@@ -17,11 +17,11 @@ class JwtProcess extends ConfigJwt
      *
      * @return string
      */
-    public function encode(array $payload): string
+    public static function encode(array $payload): string
     {
         // $dia = 60*60*24;
         // $payload['exp'] = time() + 1*$dia;
-        $jwt = JWT::encode($payload, $this->getPrivateKey(), 'RS256');
+        $jwt = JWT::encode($payload, self::getPrivateKey(), 'RS256');
         return $jwt;
     }
 
@@ -35,7 +35,7 @@ class JwtProcess extends ConfigJwt
     public function decode(string $jwt): bool
     {
         try {
-            $decoded = JWT::decode($jwt, $this->getPublicKey(), array('RS256'));
+            $decoded = JWT::decode($jwt, self::getPublicKey(), array('RS256'));
             $this->payload = json_decode(json_encode($decoded), true);
             return true;
         } catch (\Throwable $th) {

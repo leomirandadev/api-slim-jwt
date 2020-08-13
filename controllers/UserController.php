@@ -18,20 +18,13 @@ class UserController extends Controller
     public function login(string $email, string $password): bool
     {
         $userModel = new User;
-        $results = $userModel->read([
-            "email" => $email,
-            "password_hash" => md5($password),
-        ]);
+        $results = $userModel->read(["email" => $email, "password_hash" => md5($password)], ['created_at', 'updated_at']);
 
         if (count($results) > 0) {
 
-            $jwt = new JwtProcess();
-            $userID = $results[0]['id'];
-
-            $this->output["token"] = $jwt->encode(["id" => $userID]);
+            $this->output["token"] = JwtProcess::encode($results[0]);
             $this->message = "Login with success";
             return true;
-
         }
 
         $this->message = "User not found";
@@ -45,14 +38,13 @@ class UserController extends Controller
      * @param  array $infos
      * @return bool
      */
-    function new (array $infos): bool {
+    public function create(array $infos): bool
+    {
         $userModel = new User;
         $userModel->setCamps([
             "name" => $infos["name"],
             "email" => $infos["email"],
-            "gender" => $infos["gender"],
-            "birthdate" => $infos["birthdate"],
-            "password" => md5($infos["password"]),
+            "password_hash" => md5($infos["password"]),
         ]);
 
         $userID = $userModel->create();

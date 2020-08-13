@@ -51,7 +51,7 @@ $app->post('/user', function (Request $request, Response $response) {
     $user = new UserController;
 
     return $response->withJson([
-        "ok" => $user->new($params),
+        "ok" => $user->create($params),
         "message" => $user->message(),
         "output" => $user->output(),
     ]);

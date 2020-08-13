@@ -4,12 +4,12 @@ namespace Settings;
 class ConfigJwt
 {
 
-    protected function getPrivateKey()
+    protected static function getPrivateKey()
     {
         return file_get_contents(__DIR__ . '/private.pem');
     }
 
-    protected function getPublicKey()
+    protected static function getPublicKey()
     {
         return file_get_contents(__DIR__ . '/public.pem');
     }
