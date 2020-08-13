@@ -13,9 +13,11 @@ class JwtTest extends TestCase
 
     public function testDecodeToken()
     {
-        $token = JwtProcess::encode([]);
+        $token = JwtProcess::encode(['id' => 4]);
 
         $jwt = new JwtProcess;
-        $this->assertEquals(true, $jwt->decode($token));
+        $jwt->decode($token);
+
+        $this->assertEquals(4, $jwt->payload['id']);
     }
 }
