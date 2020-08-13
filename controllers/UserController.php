@@ -1,210 +1,109 @@
 <?php
 namespace Controllers;
+
+use Jwt\JwtProcess;
 use Models\User;
+use Utils\Controller;
 
-class UserController {
+class UserController extends Controller
+{
 
-  public $output = array();
-  public $message = '';
+    /**
+     * login
+     *
+     * @param  string $email
+     * @param  string $password
+     * @return bool
+     */
+    public function login(string $email, string $password): bool
+    {
+        $userModel = new User;
+        $results = $userModel->read([
+            "email" => $email,
+            "password_hash" => md5($password),
+        ]);
 
-  /**
-   * getAll
-   *
-   * @return bool
-   */
-  public function getAll():bool {
-    $userModel = new User;
+        if (count($results) > 0) {
 
-    $result = $userModel->getAll();
-    if ( $result ) {
-      $this->output = $result;
-      return TRUE;
-    }
-    
-    $this->message = 'Users not found';
-    return FALSE;
-  }
-  
-  /**
-   * getById
-   *
-   * @param  int $id
-   *
-   * @return bool
-   */
-  public function getById(int $id):bool {
-    $userModel = new User;
+            $jwt = new JwtProcess();
+            $userID = $results[0]['id'];
 
-    $result = $userModel->getById($id);
-    if ( $result ) {
-      $this->output = $result;
-      return TRUE;
-    }
-    
-    $this->message = 'User not found';
-    return FALSE;
-  }
+            $this->output["token"] = $jwt->encode(["id" => $userID]);
+            $this->message = "Login with success";
+            return true;
 
-  /**
-   * create
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  public function create(array $args):bool {
-    
-    if ( !$this->checkAllData($args) ) return FALSE;
+        }
 
-    $userModel = new User;
-    $userModel->name = $args['name'];
-    $userModel->email = $args['email'];
-    
-    $result = $userModel->create($args['password']);
-    if ( $result ) {
-      $this->output = $result;
-      return TRUE;
-    }
-    
-    $this->message = 'User not created';
-    return FALSE;
-  }
+        $this->message = "User not found";
+        return false;
 
-  /**
-   * update
-   *
-   * @param  array $args
-   * @param  int $id
-   *
-   * @return bool
-   */
-  public function update(int $id, array $args):bool {
-    
-    if ( !$this->checkAllData($args) ) return FALSE;
-
-    $userModel = new User;
-    $userModel->name = $args['name'];
-    $userModel->email = $args['email'];
-    
-    if ( $userModel->getByIdPassword($id, $args['password']) ){
-      if ( $userModel->changeAll($id, $args['password']) ) {
-        $this->message = 'User updated successfuly';
-        return TRUE;
-      }
-      $this->message = 'Error on change user data';
-      return FALSE;
-    }
-    
-    $this->message = 'User not match';
-    return FALSE;
-  }
-
-  /**
-   * changePassword
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  public function changePassword(int $id, array $args):bool {
-
-    if ( !$this->checkDataToChangePassword($args) ) return FALSE;
-
-    $userModel = new User;
-
-    if ( $userModel->getByIdPassword($id, $args['password']) ){
-      if ($userModel->changePassword($id, $args['newPassword'])) {
-        $this->message = 'Password change successfuly';
-        return TRUE;
-      }
-      $this->message = 'Error on change password';
-      return FALSE;
-    }
-    
-    $this->message = 'User not match';
-    return FALSE;
-  }
-
-  /**
-   * login
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  public function login(array $args):bool {
-
-    if ( !$this->checkDataToLogin($args) ) return FALSE;
-
-    $userModel = new User;
-    $userModel->email = $args['email'];
-    $result = $userModel->getByEmailPassword($args['password']);
-
-    if ( $result ) {
-      unset($result[0]['password_hash']);
-      $this->output = $result;
-      return TRUE;
-    }
-    
-    $this->message = 'User not found';
-    return FALSE;
-  }
-
-  /**
-   * checkAllData
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  private function checkAllData(array $args):bool {
-    if (
-      !isset($args['name']) || empty($args['name']) ||
-      !isset($args['email']) || empty($args['email']) ||
-      !isset($args['password']) || empty($args['password'])
-    ){
-      $this->message = 'Data not validated';
-      return FALSE;
     }
 
-    return TRUE;
-  }
+    /**
+     * new
+     *
+     * @param  array $infos
+     * @return bool
+     */
+    function new (array $infos): bool {
+        $userModel = new User;
+        $userModel->setCamps([
+            "name" => $infos["name"],
+            "email" => $infos["email"],
+            "gender" => $infos["gender"],
+            "birthdate" => $infos["birthdate"],
+            "password" => md5($infos["password"]),
+        ]);
 
-  /**
-   * checkDataToLogin
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  private function checkDataToLogin(array $args):bool {
-    if (
-      !isset($args['email']) || empty($args['email']) ||
-      !isset($args['password']) || empty($args['password'])
-    ){
-      $this->message = 'Data not validated';
-      return FALSE;
+        $userID = $userModel->create();
+        if ($userID > 0) {
+            $this->output["id"] = $userID;
+            $this->message = "User created";
+            return true;
+        }
+
+        $this->message = "User not created";
+        return false;
     }
 
-    return TRUE;
-  }
- 
-  /**
-   * checkDataToChangePassword
-   *
-   * @param  array $args
-   *
-   * @return bool
-   */
-  private function checkDataToChangePassword(array $args):bool {
-    if (
-      !isset($args['newPassword']) || empty($args['newPassword']) ||
-      !isset($args['password']) || empty($args['password'])
-    ){
-      $this->message = 'Data not validated';
-      return FALSE;
+    /**
+     * getByID
+     *
+     * @param  int $ID
+     * @return bool
+     */
+    public function getByID(int $ID): bool
+    {
+        $userModel = new User;
+        $results = $userModel->read(["id" => $ID]);
+
+        if (count($results) > 0) {
+            $this->output = $results;
+            $this->message = "User Found";
+            return true;
+        }
+
+        $this->message = "User not found";
+        return false;
     }
 
-    return TRUE;
-  }
+    /**
+     * getAll
+     *
+     * @return bool
+     */
+    public function getAll(): bool
+    {
+        $userModel = new User;
+        $results = $userModel->read();
+
+        if (count($results) > 0) {
+            $this->output = $results;
+            $this->message = "User Found";
+            return true;
+        }
+
+        $this->message = "User not found";
+        return false;
+    }
 }

@@ -14,7 +14,8 @@
             "Middleware\\": "middleware/",
             "Models\\": "models/",
             "Jwt\\": "services/Jwt/",
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Utils\\": "utils/"
         }
     },
     "require-dev": {

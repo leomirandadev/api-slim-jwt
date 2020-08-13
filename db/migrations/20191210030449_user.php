@@ -31,15 +31,15 @@ class User extends AbstractMigration
      */
     public function up()
     {
-        if ( !$this->hasTable('user') ) {
+        if (!$this->hasTable('user')) {
             $user = $this->table('user')
-            ->addColumn('name', 'string', ['limit' => 80])
-            ->addColumn('password_hash', 'string', ['limit' => 40])
-            ->addColumn('email', 'string', ['limit' => 100])
-            ->addColumn('created', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('updated', 'datetime', ['null' => true, 'update' => 'CURRENT_TIMESTAMP'])
-            ->create();
-        } 
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('password_hash', 'string', ['limit' => 40])
+                ->addColumn('email', 'string', ['limit' => 100])
+                ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+                ->addColumn('updated_at', 'datetime', ['null' => true, 'update' => 'CURRENT_TIMESTAMP'])
+                ->create();
+        }
     }
     public function down()
     {

@@ -1,86 +1,58 @@
 <?php
 namespace Routers;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
-
-use Jwt\JwtProcess, Middleware\Jwt as JwtMiddleware;
 use Controllers\UserController;
+use Middleware\Jwt as JwtMiddleware;
+use \Psr\Http\Message\ResponseInterface as Response;
+use \Psr\Http\Message\ServerRequestInterface as Request;
 
+//========================================================================================================
+//                                              POST
+//========================================================================================================
 
-// GET ALL USERS
-$app->get('/users', function (Request $request, Response $response, array $args) {
-  $userController = new UserController;
-  
-  if ( $userController->getAll() ) {
-    return $response->withJson(["ok" => TRUE, "output" => $userController->output]);
-  }
-  return $response->withJson(["ok" => FALSE, "message" => $userController->message]);
-
-})->add(new JwtMiddleware);
-
-
-// GET USER BY ID
 $app->get('/user/{id}', function (Request $request, Response $response, array $args) {
 
-  $userController = new UserController;
-  
-  if ( $userController->getById($args['id']) ) {
-    return $response->withJson(["ok" => TRUE, "output" => $userController->output]);
-  }
-  return $response->withJson(["ok" => FALSE, "message" => $userController->message]);
+    $user = new UserController;
 
+    return $response->withJson([
+        "ok" => $user->getByID($args['id']),
+        "message" => $user->message(),
+        "output" => $user->output(),
+    ]);
 })->add(new JwtMiddleware);
 
+$app->get('/users', function (Request $request, Response $response, array $args) {
 
-// INSERT A NEW USER
+    $user = new UserController;
+
+    return $response->withJson([
+        "ok" => $user->getAll(),
+        "message" => $user->message(),
+        "output" => $user->output(),
+    ]);
+})->add(new JwtMiddleware);
+
+$app->post('/user/login', function (Request $request, Response $response) {
+    $params = $request->getParams();
+
+    $user = new UserController;
+
+    return $response->withJson([
+        "ok" => $user->login($params['email'], $params['password']),
+        "message" => $user->message(),
+        "output" => $user->output(),
+    ]);
+});
+
 $app->post('/user', function (Request $request, Response $response) {
 
-  $args = $request->getParams();
-  $userController = new UserController;
-  
-  if ( $userController->create($args) ) {
-    return $response->withJson(["ok" => TRUE, "idInserido" => $userController->output]);
-  }
-  return $response->withJson(["ok" => FALSE, "message" => $userController->message]);
+    $params = $request->getParams();
 
-});
+    $user = new UserController;
 
-
-// LOGIN 
-$app->post('/user/login', function (Request $request, Response $response) {
-
-  $userController = new UserController;
-
-  if ($userController->login($request->getParams())) {
-      $jwt = new JwtProcess;
-      $token = $jwt->encode($userController->output);
-      return $response->withJson(["ok" => TRUE, "output" => $userController->output, "token" => $token]);
-  }
-  return $response->withJson(["ok" => FALSE, "output" => $userController->output]);
-
-});
-
-
-// UPDATE PASSWORD FROM USER
-$app->patch('/user/{id}/password', function (Request $request, Response $response, array $args) {
-  $data = $request->getParams();
-  $userController = new UserController;
-  
-  if ( $userController->changePassword($args['id'], $data) ) {
-    return $response->withJson(["ok" => TRUE, "message" => $userController->message]);
-  }
-  return $response->withJson(["ok" => FALSE, "message" => $userController->message]);
-})->add(new JwtMiddleware);
-
-
-// UPDATE ALL DATA FROM USER
-$app->put('/user/{id}', function (Request $request, Response $response, array $args) {
-  $data = $request->getParams();
-  $userController = new UserController;
-  
-  if ( $userController->update($args['id'], $data) ) {
-    return $response->withJson(["ok" => TRUE, "message" => $userController->message]);
-  }
-  return $response->withJson(["ok" => FALSE, "message" => $userController->message]);
+    return $response->withJson([
+        "ok" => $user->new($params),
+        "message" => $user->message(),
+        "output" => $user->output(),
+    ]);
 });

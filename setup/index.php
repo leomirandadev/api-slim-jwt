@@ -1,27 +1,27 @@
-<?php 
+<?php
 
-  // pegar o ip do docker
-  $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-  socket_connect($sock, "8.8.8.8", 53);
-  socket_getsockname($sock, $localAddr);
+include_once 'SetupTools.php';
 
-  // arquivos que devem ser gerados e variaveis que devem ser substituidas no conteudo
-  $arqsSettings = [
+// arquivos que devem ser gerados e variaveis que devem ser substituidas no conteudo
+$arqsSettings = [
     [
-      'arqName'=>'ConfigDB.php',
-      'vars' => [ '%LOCALHOST%' => $localAddr ]
+        'arqName' => 'ConfigJwt.php', 'vars' => [],
     ],
     [
-      'arqName'=>'ConfigJwt.php',
-      'vars' => [ '%KEYSECRET%' => uniqid(base64_encode(rand())) ]
-    ]
-  ];
-  $arqPhinxYml = [ [ 'arqName'=>'phinx.yml', 'vars' => [] ] ];
+        'arqName' => 'ConnectionDB.php',
+        'vars' => ['%DBNAME%' => "api_php"],
+    ],
+];
+$setupTools = new SetupTools;
+$setupTools->createFolderAndArqs($arqsSettings);
 
-  // inicio do setup
-  include_once('SetupTools.php');
-  $setupTools = new SetupTools;
-  $setupTools->createFolderAndArqs($arqsSettings);
+$arqPhinxYml = [['arqName' => 'phinx.yml', 'vars' => []]];
+$setupTools->pathArqs = __DIR__ . '/../';
+$setupTools->createFolderAndArqs($arqPhinxYml);
 
-  $setupTools->pathArqs = __DIR__.'/../';
-  $setupTools->createFolderAndArqs($arqPhinxYml);
+// ssh para a jwt
+$settingsPath = (string) __DIR__ . '/../settings/';
+if (!file_exists($settingsPath . "private.pem")) {
+    exec("openssl genrsa -out " . $settingsPath . "private.pem 2048");
+    exec("openssl rsa -in " . $settingsPath . "private.pem -outform PEM -pubout -out " . $settingsPath . "public.pem");
+}

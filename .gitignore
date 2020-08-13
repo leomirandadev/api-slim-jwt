@@ -1,5 +1,15 @@
-vendor
-settings
+# dependencies
+vendor/
+settings/
 composer.lock
-notes.md
-phinx.yml
+
+public/docs/*
+!public/docs/README.md
+
+public/uploads/*
+!public/uploads/README.md
+
+tmp/*
+!tmp/README.md
+
+.DS_Store
