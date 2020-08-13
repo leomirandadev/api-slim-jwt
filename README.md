@@ -10,7 +10,7 @@ Para iniciar o projeto basta:
 - Fazer um git clone do projeto para sua máquina;
 - Executar o comando ``composer install`` na raiz do projeto. O comando irá baixar as dependencias do projeto;
 - Executar o comando ``php setup/index.php`` na raiz do projeto. Este processo criará os arquivos de configuração do banco de dados e da JWT;
-- Levantar o serviço com o comando ``docker-compose -f "dockerfiles/dev/docker-compose.yml" up -d --build`` na raiz do projeto;
+- Levantar o serviço com o comando ``docker-compose -f "docker/dev/docker-compose.yml" up -d --build`` na raiz do projeto;
 - Executar o comando ``./phinx migrate`` na raiz do projeto. Isto criará as instancias do banco de dados;
 - Executar o comando ``./phinx seed:run`` na raiz do projeto. Isto irá inserir dados de usuários testes no banco de dados;
 
